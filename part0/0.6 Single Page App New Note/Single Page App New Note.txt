@@ -1,0 +1,19 @@
+title Single Page app - New Note
+
+actor User
+User->browser: User types in a note
+User->browser: User presses Save
+
+note over browser:
+browser executes the event 
+that adds the new notes to the 
+note list and renders the new list
+end note
+
+note over browser:
+browser sends the new note 
+to the server via js-code
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa with new note in payload
+server-->browser: Response 201 with "{"message":"note created"}"
