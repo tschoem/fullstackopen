@@ -33,12 +33,31 @@ const App = () => {
     setVotes(copy)
   }
 
+  const mostVoted = () => {
+
+    var max = votes[0];
+    var maxIndex = 0;
+  
+    for (var i = 1; i < votes.length; i++) {
+        if (votes[i] > max) {
+          maxIndex = i;
+          max = votes[i];
+        }
+      }
+  
+    return maxIndex;
+  }
+
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <p>has {votes[selected]} votes</p>
+      <h1>Anectode of the day</h1>
+      <p>{anecdotes[selected]}<br />
+      has {votes[selected]} votes</p>
       <Button handleClick={handleVote} text="vote" />
       <Button handleClick={randomizeSelection} text="next anecdote" />
+      <h1>Anectode with the most votes</h1>
+      <p>{anecdotes[mostVoted()]}<br />
+      has {votes[mostVoted()]} votes</p>
     </div>
   )
 }
