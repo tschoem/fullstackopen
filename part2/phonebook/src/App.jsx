@@ -1,34 +1,7 @@
 import { useState } from 'react'
-
-const Number = ({ person }) =>
-  <b>
-    {person.name} {person.number}<br />
-  </b>
-
-const Persons = ({ persons }) => 
-  <>
-    {persons.map((person) => <Number key={person.id} person={person} />)}
-  </>
-
-const Filter = (props) => 
-  <form>
-    <div>
-      filter shown with <input value={props.filter} onChange={props.onChange} />
-    </div>
-  </form>
-
-const PersonForm = (props) =>
-  <form onSubmit={props.onSubmit}>
-    <div>
-      name: <input value={props.newName} onChange={props.onNameChange} />
-    </div>
-    <div>
-      number: <input value={props.newNumber} onChange={props.onNumberChange}/>
-    </div>
-    <div>
-      <button type="submit">add</button>
-    </div>
-  </form>
+import PersonForm from './components/PersonForm'
+import Filter from './components/Filter'
+import Persons from './components/Persons'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -46,16 +19,16 @@ const App = () => {
   : persons.filter(person => person.name.toLowerCase().includes(filterName.toLowerCase()))
 
   const handleFilterChange = (event) => {
-    console.log(event.target.value)
+    //console.log(event.target.value)
     setNewFilter(event.target.value)
   }
   const handleNameChange = (event) => {
-    console.log(event.target.value)
+    //console.log(event.target.value)
     setNewName(event.target.value)
   }
 
   const handleNumberChange = (event) => {
-    console.log(event.target.value)
+    //console.log(event.target.value)
     setNewNumber(event.target.value)
   }
 
