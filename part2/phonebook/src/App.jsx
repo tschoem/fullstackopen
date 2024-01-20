@@ -54,8 +54,18 @@ const App = () => {
     }
 
     if (newName !== '') {
-      if (persons.findIndex((person) => person.name === newName) >= 0) {
-        alert(`${newName} is already added to the phonebook.`)
+      const i = persons.findIndex((person) => person.name === newName)
+      if (i >= 0) {
+        if (window.confirm(`${newName} is already in the phonebook. Do you want to replace the old number with the new one?`)) {
+          phonebookService
+            .updateNumber(persons[i].id,newPerson)
+            .then((data) => {
+              console.log(data)
+              setPersons(persons.map(person => person.id !== data.id ? person : data))
+              setNewName('')
+              setNewNumber('')
+            })
+        }
       } else {
         phonebookService
           .createEntry(newPerson)
