@@ -3,12 +3,14 @@ import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
 import phonebookService from './services/phonebook'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setNewFilter] = useState('')
+  const [warning, setWarning] = useState({type: null, message: null})
 
   useEffect(() => {
     phonebookService.getAll()
@@ -64,6 +66,11 @@ const App = () => {
               setPersons(persons.map(person => person.id !== data.id ? person : data))
               setNewName('')
               setNewNumber('')
+              setWarning({type:'update',message:`${newName} was updated with new number`})
+              setTimeout(() => {
+                setWarning({type:null,message:null})
+              }, 5000)
+      
             })
         }
       } else {
@@ -82,6 +89,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+        <Notification type={warning.type} message ={warning.message} />
         <Filter filter={filterName} onChange={handleFilterChange} />
 
       <h2>Add a new</h2>
