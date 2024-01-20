@@ -11,10 +11,8 @@ const App = () => {
   const [filterName, setNewFilter] = useState('')
 
   useEffect(() => {
-    console.log('effect')
     phonebookService.getAll()
       .then(data => {
-        console.log('promise fulfilled')
         setPersons(data)
       })
   }, [])
@@ -31,10 +29,20 @@ const App = () => {
     //console.log(event.target.value)
     setNewName(event.target.value)
   }
-
   const handleNumberChange = (event) => {
     //console.log(event.target.value)
     setNewNumber(event.target.value)
+  }
+  const handleDelete = person => {
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      phonebookService
+        .deleteNumber(person.id)
+        .then(data => {
+        console.log(data)
+        //setPersons(persons.filter(person => person.id !== data.id))
+      })
+    }
+    
   }
 
   const addPerson = (event) => {
@@ -50,7 +58,7 @@ const App = () => {
         alert(`${newName} is already added to the phonebook.`)
       } else {
         phonebookService
-          .create(newPerson)
+          .createEntry(newPerson)
           .then(data => {
             setPersons(persons.concat(data))
             setNewName('')
@@ -76,7 +84,7 @@ const App = () => {
         />
 
       <h2>Numbers</h2>
-        <Persons persons={personsToShow} />
+        <Persons persons={personsToShow} deleteHandler={handleDelete}/>
     </div>
   )
 }
