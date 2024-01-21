@@ -35,16 +35,27 @@ const App = () => {
     //console.log(event.target.value)
     setNewNumber(event.target.value)
   }
-  const handleDelete = person => {
+  const handleDelete = (event, person) => {
+    event.preventDefault()
     if (window.confirm(`Delete ${person.name} ?`)) {
       phonebookService
         .deleteNumber(person.id)
         .then(data => {
-        console.log(data)
-        //setPersons(persons.filter(person => person.id !== data.id))
-      })
-    }
-    
+          console.log(data)
+          setPersons(persons.filter(personIt => personIt.id !== data.id))
+          setWarning({type:'update',message:`${person.name} was successfully deleted`})
+          setTimeout(() => {
+            setWarning({type:null,message:null})
+          }, 5000)
+        })
+        .catch(error => {
+          setPersons(persons.filter(personIt => personIt.id !== person.id))
+          setWarning({type:'error',message:`${person.name} was already deleted from server`})
+          setTimeout(() => {
+            setWarning({type:null,message:null})
+          }, 5000)
+        })
+    }    
   }
 
   const addPerson = (event) => {
@@ -70,7 +81,13 @@ const App = () => {
               setTimeout(() => {
                 setWarning({type:null,message:null})
               }, 5000)
-      
+            })
+            .catch(error => {
+              setPersons(persons.filter(personIt => personIt.id !== persons[i].id))
+              setWarning({type:'error',message:`Information of ${newName} has already been removed from server`})
+              setTimeout(() => {
+                setWarning({type:null,message:null})
+              }, 5000)
             })
         }
       } else {
@@ -80,10 +97,13 @@ const App = () => {
             setPersons(persons.concat(data))
             setNewName('')
             setNewNumber('')
+            setWarning({type:'update',message:`${newPerson.name} was added to the phonebook`})
+              setTimeout(() => {
+                setWarning({type:null,message:null})
+              }, 5000)
           }) 
       }
     }
-
   }
 
   return (

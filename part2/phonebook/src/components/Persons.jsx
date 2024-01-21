@@ -8,7 +8,7 @@ const Number = ( props ) =>
 const Persons = ( props ) => {
   return (
     <>
-      {props.persons.map((person) => <Number key={person.id} person={person} onSubmit={() => props.deleteHandler(person)}/>) }
+      {props.persons.map((person) => <Number key={person.id} person={person} onSubmit={(e) => props.deleteHandler(e,person)}/>) }
     </>
   )
 }
