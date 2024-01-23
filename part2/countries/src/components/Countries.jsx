@@ -8,7 +8,7 @@ export const CountryFilter = (props) =>
 
 const CountryName = (props) =>
   <>
-    {props.name} <br />
+    {props.name} <button onClick={props.onShow}>show</button><br />
   </>
 
 export const CountryCard = ({country}) => {
@@ -29,14 +29,14 @@ export const CountryCard = ({country}) => {
   )
 }
 
-export const CountriesList = ({countries}) => {
-  if (countries.length > 10) {
+export const CountriesList = (props) => {
+  if (props.countries.length > 10) {
     return (<p>Too many matches. Specify another filter</p>)
   } 
-  if (countries.length > 1) {
+  if (props.countries.length > 1) {
     return (
       <p>
-        {countries.map(country => <CountryName key={country.cca2} name={country.name.common} />)}
+        {props.countries.map(country => <CountryName key={country.cca2} name={country.name.common} onShow={() => props.onShow(country.name.common)}/>)}
       </p>
     )
   }

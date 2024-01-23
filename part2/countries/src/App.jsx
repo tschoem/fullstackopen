@@ -5,7 +5,7 @@ import {CountryFilter, CountryCard, CountriesList} from './components/Countries.
 function App() {
   const [countryFilter, setCountryFilter] = useState('')
   const [countries, setCountries] = useState(null)
-//  const [country, setCountry] = useState(null)
+  const [countryClicked, setCountryClicked] = useState(null)
 
   useEffect(() => {
     countriesService.getAll()
@@ -27,15 +27,22 @@ function App() {
   ? countriesToShow[0]
   : null
 
+  if (countryClicked) country = countryClicked
+
   const applyFilter = (event) => {
     event.preventDefault()
     setCountryFilter(event.target.value)
+    setCountryClicked(null)
+  }
+
+  const handleShow = (countryName) => {
+    setCountryClicked(countries.find((country) => country.name.common === countryName))
   }
 
   return (
     <>
       <CountryFilter filter={countryFilter} onChange={applyFilter}/>
-      <CountriesList countries={countriesToShow} />
+      <CountriesList countries={countriesToShow} onShow={handleShow}/>
       <CountryCard country={country} />
     </>
   )
