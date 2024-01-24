@@ -12,21 +12,27 @@ const CountryName = (props) =>
   </>
 
 export const CountryCard = ({country}) => {
-  if (country) return (
-  <>
-    <h1>{country.name.common}</h1>
-    <p>
-      capital {country.capital[0]}<br />
-      area {country.area}
-    </p>
-    <div><b>Languages:</b>
-      <ul>
-        {Object.values(country.languages).map(language => <li key={language}>{language}</li>)}
-      </ul>
-    </div>
-    <img width='400' height='250' src={country.flags.png} />
-  </>
-  )
+  if (country) {
+    const capital = ('capital' in country) 
+    ? country.capital[0]
+    : 'N/A'
+
+    return (
+    <>
+        <h1>{country.name.common}</h1>
+        <p>
+        capital {capital}<br />
+        area {country.area}
+        </p>
+        <div><b>Languages:</b>
+        <ul>
+            {Object.values(country.languages).map(language => <li key={language}>{language}</li>)}
+        </ul>
+        </div>
+        <img width='400' height='250' src={country.flags.png} />
+    </>
+    )
+  }
 }
 
 export const CountriesList = (props) => {

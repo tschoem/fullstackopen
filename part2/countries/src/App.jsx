@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import countriesService from './services/countries.js' 
 import {CountryFilter, CountryCard, CountriesList} from './components/Countries.jsx'
+import weatherService from './services/weather.js'
+import WeatherCard from './components/Weather.jsx'
 
 function App() {
   const [countryFilter, setCountryFilter] = useState('')
   const [countries, setCountries] = useState(null)
   const [countryClicked, setCountryClicked] = useState(null)
+  const [weatherData, setWeatherData] = useState(null)
 
   useEffect(() => {
     countriesService.getAll()
@@ -13,6 +16,18 @@ function App() {
         setCountries(data)
       })
   }, [])
+
+  useEffect(() => {
+    if (countryClicked && ('capital' in countryClicked)) {
+      weatherService.getLocation(countryClicked.capital[0])
+        .then(data => {
+          weatherService.getWeather(data[0].lat,data[0].lon)
+            .then(weatherData => {
+              setWeatherData(weatherData)
+            })
+        })
+      }
+  },[countryClicked])
 
   // do not render anything if the countries list is null
   if (!countries) { 
@@ -32,7 +47,13 @@ function App() {
   const applyFilter = (event) => {
     event.preventDefault()
     setCountryFilter(event.target.value)
-    setCountryClicked(null)
+    const filteredCountries = countries.filter(country => country.name.common.toLowerCase().includes(event.target.value.toLowerCase()))
+    if (filteredCountries.length === 1) {
+      setCountryClicked(filteredCountries[0])
+    } else {
+      setCountryClicked(null)
+    }
+    setWeatherData(null)
   }
 
   const handleShow = (countryName) => {
@@ -44,6 +65,7 @@ function App() {
       <CountryFilter filter={countryFilter} onChange={applyFilter}/>
       <CountriesList countries={countriesToShow} onShow={handleShow}/>
       <CountryCard country={country} />
+      <WeatherCard weather={weatherData} country={country}/>
     </>
   )
 }
