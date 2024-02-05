@@ -101,6 +101,14 @@ const App = () => {
               setTimeout(() => {
                 setWarning({type:null,message:null})
               }, 5000)
+          })
+          .catch(error => {
+            // this is the way to access the error message
+            console.log(error)
+            setWarning({type:'error',message:`${error.response.data.error}`})
+              setTimeout(() => {
+                setWarning({type:null,message:null})
+              }, 5000)
           }) 
       }
     }

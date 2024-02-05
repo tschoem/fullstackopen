@@ -32,32 +32,25 @@ app.get('/api/notes', (request, response) => {
   })
 })
 
-app.get('/api/notes/:id', (request, response) => {
-  Note.findById(request.params.id).then(note => {
-    response.json(note)
-  })
+app.get('/api/notes/:id', (request, response, next) => {
+  Note.findById(request.params.id)
+    .then(note => {
+      if (note) {
+        response.json(note)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
+
 })
-/*app.get('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const note = notes.find(note => note.id === id)
-  
-  if (note) {
-    response.json(note)
-  } else {
-    response.statusMessage = "ID not found";
-    response.status(404).end()
-  }
 
-  Note.findById(request.params.id).then(note => {
-    response.json(note)
-  })
-})*/
-
-app.delete('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
-  notes = notes.filter(note => note.id !== id)
-
-  response.status(204).end()
+app.delete('/api/notes/:id', (request, response, next) => {
+  Note.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 const generateId = () => {
@@ -67,7 +60,7 @@ const generateId = () => {
   return maxId + 1
 }
 
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
   const body = request.body
 
   if (!body.content) {
@@ -84,38 +77,22 @@ app.post('/api/notes', (request, response) => {
   note.save().then(savedNote => {
     response.json(savedNote)
   })
+  .catch(error => next(error))
 
 })
 
-app.put('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const noteToModify = notes.find(note => note.id === id)
-  
-  if (!noteToModify) {
-    return response.status(404).json({ 
-      error: 'note not found' 
-    })
-  }
-  
+app.put('/api/notes/:id', (request, response, next) => {
   const body = request.body
+  const { content, important } = request.body
 
-  console.log(body)
-
-  if (!body.content) {
-    return response.status(400).json({ 
-      error: 'content missing' 
+  Note.findByIdAndUpdate(
+    request.params.id, 
+    { content, important },
+    { new: true, runValidators: true, context: 'query' })
+    .then(updatedNote => {
+      response.json(updatedNote)
     })
-  }
-
-  noteToModify.content = body.content
-  noteToModify.important = Boolean(body.important) || false
-
-  console.log(notes)
-
-  response.json(noteToModify)
-
-  //response.status(200).end()
-
+    .catch(error => next(error))
 })
 
 app.use(unknownEndpoint)
@@ -124,3 +101,18 @@ const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
+
+  next(error)
+}
+
+// this has to be the last loaded middleware.
+app.use(errorHandler)

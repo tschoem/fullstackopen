@@ -1,8 +1,7 @@
-PUT http://localhost:3001/api/notes/4 HTTP/1.1
+PUT http://localhost:3001/api/notes/65c12077259bf23574c49225 HTTP/1.1
 content-type: application/json
 
 {
-    "id": 4,
     "content": "Biking is cool",
     "important": false
 }
