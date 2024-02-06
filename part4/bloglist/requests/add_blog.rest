@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs HTTP/1.1
 content-type: application/json
 
 {
-  "title": "My Blog",
-  "author": "Thomas Schoemaecker",
-  "url": "https://www.nyt.com/blog",
-  "likes": 0
+  "title": "His Blog",
+  "author": "Damien Lepretre",
+  "url": "https://www.nypretre.com/blog",
+  "likes": 3
 }
