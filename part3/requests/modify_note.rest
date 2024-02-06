@@ -2,6 +2,6 @@ PUT http://localhost:3001/api/notes/65c12077259bf23574c49225 HTTP/1.1
 content-type: application/json
 
 {
-    "content": "Biking is cool",
+    "content": "cool",
     "important": false
 }
