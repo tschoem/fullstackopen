@@ -1,6 +1,6 @@
-const totalLikes = require('../utils/list_helper').totalLikes
+const favoriteBlog = require('../utils/list_helper').favoriteBlog
 
-describe('total likes', () => {
+describe('favorite blog', () => {
   const listWithOneBlog = [
     {
       _id: '5a422aa71b54a676234d17f8',
@@ -63,16 +63,16 @@ describe('total likes', () => {
     }
   ]
 
-  test('of empty list is zero', () => {
-    expect(totalLikes([])).toBe(0)
+  test('of an empty list returns an empty object', () => {
+    expect(favoriteBlog([])).toEqual({})
   })
 
-  test('when list has only one blog, equals the likes of that', () => {
-    expect(totalLikes(listWithOneBlog)).toBe(55)
+  test('of a list with one blog returns that blog', () => {
+    expect(favoriteBlog(listWithOneBlog)).toEqual(listWithOneBlog[0])
   })
 
-  test('of a bigger list is calculated right', () => {
-    expect(totalLikes(listWithMultipleBlogs)).toBe(36)
+  test('of a bigger list is returning the right blog', () => {
+    expect(favoriteBlog(listWithMultipleBlogs)).toEqual(listWithMultipleBlogs[2])
   })
 
 })
