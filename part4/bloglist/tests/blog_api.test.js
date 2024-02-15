@@ -8,7 +8,7 @@ const api = supertest(app)
 
 const Blog = require('../models/blog')
 
-describe('blog API', () => {
+describe('blog API with existing initial data', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
 
@@ -112,6 +112,36 @@ describe('blog API', () => {
     const blogsAtEnd = await helper.blogsInDb()
 
     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+  })
+
+  describe('deletion of a note', () => {
+    test('succeeds with status code 204 if id is valid', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = blogsAtStart[0]
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+
+      const ids = blogsAtEnd.map(r => r.id)
+      assert(!ids.includes(blogToDelete.id))
+    })
+
+    test('fails with status code 400 if id is invalid', async () => {
+      const missingID = helper.nonExistingId
+
+      await api
+        .delete(`/api/blogs/${missingID}`)
+        .expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
   })
 
   after(async () => {
