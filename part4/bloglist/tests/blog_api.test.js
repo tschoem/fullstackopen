@@ -26,14 +26,14 @@ describe('blog API', () => {
   }, 10000)
 
   test('returns all blogs', async () => {
-    const response = await api.get('/api/blogs')
+    const blogsInDb = await helper.blogsInDb()
 
-    assert.strictEqual(response.body.length, helper.initialBlogs.length)
+    assert.strictEqual(blogsInDb.length, helper.initialBlogs.length)
   })
 
   test('uses .id as unique identifier', async () => {
-    const response = await api.get('/api/blogs')
-    const blog = new Blog(response.body[0]).toJSON()
+    const blogsInDb = await helper.blogsInDb()
+    const blog = new Blog(blogsInDb[0]).toJSON()
     assert('id' in blog)
   })
 
@@ -55,8 +55,8 @@ describe('blog API', () => {
     const { id, ...rest } = blog
     assert.deepStrictEqual(rest, newBlog)
 
-    const response = await api.get('/api/blogs')
-    assert(response.body.length, helper.initialBlogs.length + 1)
+    const blogsInDb = await helper.blogsInDb()
+    assert(blogsInDb.length, helper.initialBlogs.length + 1)
 
   })
 
@@ -76,8 +76,42 @@ describe('blog API', () => {
     const blog = new Blog(postResponse.body).toJSON()
     const { id, likes, ...rest } = blog
     assert.deepStrictEqual(rest, newBlog)
-    assert.strictEqual(likes,0)
+    assert.strictEqual(likes, 0)
 
+  })
+
+  test('blog creation returns 400 if missing title', async () => {
+    const newBlog = {
+      author: 'Isaac Asimov',
+      url: 'http://blog.scifi.com/uncle-isaac/2016/05/01/irobot.html',
+      likes: 2
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+  })
+
+  test('blog creation returns 400 if missing url', async () => {
+    const newBlog = {
+      title: 'Robot wars',
+      author: 'Isaac Asimov',
+      likes: 2
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
   })
 
   after(async () => {
