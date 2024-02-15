@@ -1,3 +1,5 @@
+const { test, describe } = require('node:test')
+const assert = require('node:assert')
 const totalLikes = require('../utils/list_helper').totalLikes
 
 describe('total likes', () => {
@@ -64,15 +66,15 @@ describe('total likes', () => {
   ]
 
   test('of empty list is zero', () => {
-    expect(totalLikes([])).toBe(0)
+    assert.equal(totalLikes([]),0)
   })
 
   test('when list has only one blog, equals the likes of that', () => {
-    expect(totalLikes(listWithOneBlog)).toBe(55)
+    assert.equal(totalLikes(listWithOneBlog),55)
   })
 
   test('of a bigger list is calculated right', () => {
-    expect(totalLikes(listWithMultipleBlogs)).toBe(36)
+    assert.equal(totalLikes(listWithMultipleBlogs),36)
   })
 
 })

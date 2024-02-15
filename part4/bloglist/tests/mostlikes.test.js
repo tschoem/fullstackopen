@@ -1,3 +1,5 @@
+const { test, describe } = require('node:test')
+const assert = require('node:assert')
 const mostLikes = require('../utils/list_helper').mostLikes
 
 describe('most likes', () => {
@@ -74,15 +76,15 @@ describe('most likes', () => {
   }
 
   test('of an empty list returns an empty object', () => {
-    expect(mostLikes([])).toEqual({})
+    assert.deepEqual(mostLikes([]),{})
   })
 
   test('of a list with one blog returns that author', () => {
-    expect(mostLikes(listWithOneBlog)).toEqual(singleAuthor)
+    assert.deepEqual(mostLikes(listWithOneBlog),singleAuthor)
   })
 
   test('of a bigger list is returning the most liked author', () => {
-    expect(mostLikes(listWithMultipleBlogs)).toEqual(mostLikesAuthor)
+    assert.deepEqual(mostLikes(listWithMultipleBlogs),mostLikesAuthor)
   })
 
 })

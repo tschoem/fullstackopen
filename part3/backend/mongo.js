@@ -7,8 +7,9 @@ if (process.argv.length < 3) {
 
 const password = process.argv[2]
 
+// set to test DB
 const url =
-  `mongodb+srv://tom:${password}@cluster-tfs0.vkrt3ug.mongodb.net/noteApp?retryWrites=true&w=majority`
+  `mongodb+srv://tom:${password}@cluster-tfs0.vkrt3ug.mongodb.net/testNoteApp?retryWrites=true&w=majority`
 
 mongoose.set('strictQuery', false)
 mongoose.connect(url)
@@ -28,13 +29,12 @@ Note.find({ important: true })
     mongoose.connection.close()
   })
 
-/*
-  const note = new Note({
-  content: 'GET and POST are the most important methods of HTTP protocol',
-  important: true
-  })
-  note.save().then(result => {
+/*const note = new Note({
+  content: 'PUT may not be the most important method of HTTP protocol',
+  important: false
+})
+
+note.save().then(result => {
   console.log('note saved!')
   mongoose.connection.close()
-})
-*/
+})*/

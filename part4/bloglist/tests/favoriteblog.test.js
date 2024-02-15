@@ -1,3 +1,5 @@
+const { test, describe } = require('node:test')
+const assert = require('node:assert')
 const favoriteBlog = require('../utils/list_helper').favoriteBlog
 
 describe('favorite blog', () => {
@@ -64,15 +66,15 @@ describe('favorite blog', () => {
   ]
 
   test('of an empty list returns an empty object', () => {
-    expect(favoriteBlog([])).toEqual({})
+    assert.deepEqual(favoriteBlog([]),{})
   })
 
   test('of a list with one blog returns that blog', () => {
-    expect(favoriteBlog(listWithOneBlog)).toEqual(listWithOneBlog[0])
+    assert.deepEqual(favoriteBlog(listWithOneBlog),listWithOneBlog[0])
   })
 
   test('of a bigger list is returning the right blog', () => {
-    expect(favoriteBlog(listWithMultipleBlogs)).toEqual(listWithMultipleBlogs[2])
+    assert.deepEqual(favoriteBlog(listWithMultipleBlogs),listWithMultipleBlogs[2])
   })
 
 })

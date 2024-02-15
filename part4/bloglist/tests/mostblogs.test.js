@@ -1,3 +1,5 @@
+const { test, describe } = require('node:test')
+const assert = require('node:assert')
 const mostBlogs = require('../utils/list_helper').mostBlogs
 
 describe('most blogs', () => {
@@ -74,15 +76,15 @@ describe('most blogs', () => {
   }
 
   test('of an empty list returns an empty object', () => {
-    expect(mostBlogs([])).toEqual({})
+    assert.deepEqual(mostBlogs([]),{})
   })
 
   test('of a list with one blog returns that author', () => {
-    expect(mostBlogs(listWithOneBlog)).toEqual(singleAuthor)
+    assert.deepEqual(mostBlogs(listWithOneBlog),singleAuthor)
   })
 
   test('of a bigger list is returning the right author', () => {
-    expect(mostBlogs(listWithMultipleBlogs)).toEqual(mostBlogsAuthor)
+    assert.deepEqual(mostBlogs(listWithMultipleBlogs),mostBlogsAuthor)
   })
 
 })
