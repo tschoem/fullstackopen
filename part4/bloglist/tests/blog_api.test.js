@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const { test, describe, beforeEach, after  } = require('node:test')
 const assert = require('node:assert')
-require('express-async-errors')
 const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
@@ -30,6 +29,12 @@ describe('blog API', () => {
     const response = await api.get('/api/blogs')
 
     assert.strictEqual(response.body.length,helper.initialBlogs.length)
+  })
+
+  test('uses .id as unique identifier', async () => {
+    const response = await api.get('/api/blogs')
+    const blog = new Blog(response.body[0]).toJSON()
+    assert('id' in blog)
   })
 
   after(async () => {
