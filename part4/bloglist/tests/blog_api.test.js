@@ -52,12 +52,31 @@ describe('blog API', () => {
       .expect('Content-Type', /application\/json/)
 
     const blog = new Blog(postResponse.body).toJSON()
-    console.log(blog)
     const { id, ...rest } = blog
     assert.deepStrictEqual(rest, newBlog)
 
     const response = await api.get('/api/blogs')
     assert(response.body.length, helper.initialBlogs.length + 1)
+
+  })
+
+  test('creates a blog entry with 0 likes if property is missing', async () => {
+    const newBlog = {
+      title: 'Robot wars',
+      author: 'Isaac Asimov',
+      url: 'http://blog.scifi.com/uncle-isaac/2016/05/01/irobot.html',
+    }
+
+    const postResponse = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blog = new Blog(postResponse.body).toJSON()
+    const { id, likes, ...rest } = blog
+    assert.deepStrictEqual(rest, newBlog)
+    assert.strictEqual(likes,0)
 
   })
 
