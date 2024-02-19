@@ -1,0 +1,8 @@
+POST http://localhost:3001/api/notes HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY1Y2ZkYmY4YzZkNTg0YTI0Nzk4ODMzNyIsImlhdCI6MTcwODM3ODgxOX0.1puV1cS7xkBqeoPGidHp4uVwtWwcY9-qiJWQgnldCXE
+
+{
+    "content": "New note with rest",
+    "important": true
+}

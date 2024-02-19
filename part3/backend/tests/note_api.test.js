@@ -8,10 +8,17 @@ const api = supertest(app)
 const helper = require('./test_helper')
 
 const Note = require('../models/note')
+const User = require('../models/user')
 
 describe('when there is initially some notes saved', () => {
   beforeEach(async () => {
+    console.log('Creating Users and Notes')
+    await User.deleteMany({})
+    await User.insertMany(helper.initialUsers)
+    const usersInDb = await helper.usersInDb()
     await Note.deleteMany({})
+    helper.initialNotes[0].user = usersInDb[0].id
+    helper.initialNotes[1].user = usersInDb[1].id
     await Note.insertMany(helper.initialNotes)
   })
 
@@ -24,7 +31,7 @@ describe('when there is initially some notes saved', () => {
 
   test('all notes are returned', async () => {
     const response = await api.get('/api/notes')
-
+console.log(response.body)
     assert.strictEqual(response.body.length, helper.initialNotes.length)
   })
 

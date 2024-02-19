@@ -16,13 +16,16 @@
   "author": "Thomas Schoemaecker",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.1",
     "eslint": "^8.56.0",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",
-    "mongoose": "^8.1.1"
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.1.2",
+    "mongoose-unique-validator": "^5.0.0"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.0",
