@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs HTTP/1.1
 content-type: application/json
-Authorization: Bearer yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvbjgiLCJpZCI6IjY1ZDRlOWNkNmI3NzEzZDI0NmJmOTRiNCIsImlhdCI6MTcwODQ1MzM3NiwiZXhwIjoxNzA4NDU2OTc2fQ.9rrlvtj3GICYfoz9RM1PGRJ8As8tVDo86NRH_EA5paA
+Authorization: Bearer {{$dotenv TOKEN}}
 
 {
   "title": "His blogs is dope",
