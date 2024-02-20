@@ -3,8 +3,8 @@ content-type: application/json
 Authorization: Bearer {{$dotenv TOKEN}}
 
 {
-  "title": "His blogs is dope",
-  "author": "Alpha person",
-  "url": "https://www.alphaurl.com/post",
-  "likes": 23
+  "title": "Another blogs entry",
+  "author": "Missing person",
+  "url": "https://www.anotherone.org/post",
+  "likes": 5
 }

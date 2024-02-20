@@ -1,2 +1,2 @@
-DELETE http://localhost:3003/api/blogs/2 HTTP/1.1
+DELETE http://localhost:3003/api/blogs/65d508c92c3f0595fb2bf1ea HTTP/1.1
 Authorization: Bearer {{$dotenv TOKEN}}
