@@ -72,12 +72,12 @@ const nonExistingId = async () => {
 }
 
 const blogsInDb = async () => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('user', { blogs: 0 })
   return blogs.map(blog => blog.toJSON())
 }
 
 const usersInDb = async () => {
-  const users = await User.find({})
+  const users = await User.find({}).populate('blogs',{ url: 1, title: 1, author: 1 })
   return users.map(user => user.toJSON())
 }
 

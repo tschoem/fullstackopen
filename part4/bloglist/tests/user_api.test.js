@@ -35,7 +35,7 @@ describe('user API without any existing initial data', () => {
         .expect('Content-Type', /application\/json/)
 
       const user = new User(postResponse.body).toJSON()
-      const { id, ...rest } = user
+      const { id, blogs, ...rest } = user
       const { password, ...restUser } = newUser
       assert.deepStrictEqual(rest, restUser)
 
@@ -44,7 +44,7 @@ describe('user API without any existing initial data', () => {
 
     })
 
-    test('returns error 500 if duplicate username', async () => {
+    test('returns error 400 if duplicate username', async () => {
       const newUser = {
         username: 'tom_smith',
         name: 'Thomas Smith',
@@ -66,7 +66,7 @@ describe('user API without any existing initial data', () => {
       await api
         .post('/api/users')
         .send(nextUser)
-        .expect(500)
+        .expect(400)
 
       const usersInDb = await helper.usersInDb()
       assert(usersInDb.length, 1)

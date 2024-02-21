@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
-const { test, describe, beforeEach, after } = require('node:test')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+const { test, describe, beforeEach, after, before } = require('node:test')
 const assert = require('node:assert')
 const supertest = require('supertest')
 const helper = require('./test_helper')
@@ -7,13 +9,46 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 describe('blog API with existing initial data', () => {
+
+  let myToken
+
   beforeEach(async () => {
+    await User.deleteMany({})
+    const user = helper.initialUsers[0]
+    const saltRounds = 10
+    const passwordHash = await bcrypt.hash(user.password, saltRounds)
+    const userObject = new User({
+      name: user.name,
+      username: user.username,
+      blogs: [],
+      passwordHash: passwordHash
+    })
+    await userObject.save()
+
+    const userForToken = {
+      username: userObject.username,
+      id: userObject._id,
+    }
+
+    myToken = jwt.sign(
+      userForToken,
+      process.env.SECRET,
+      { expiresIn: 60 * 60 }
+    )
+
     await Blog.deleteMany({})
 
     for (let blog of helper.initialBlogs) {
-      let blogObject = new Blog(blog)
+      let blogObject = new Blog({
+        title: blog.title,
+        author: blog.author,
+        likes: blog.likes,
+        url: blog.url,
+        user: userObject
+      })
       await blogObject.save()
     }
   })
@@ -48,15 +83,35 @@ describe('blog API with existing initial data', () => {
     const postResponse = await api
       .post('/api/blogs')
       .send(newBlog)
+      .set({ Authorization: `Bearer ${myToken}` })
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const blog = new Blog(postResponse.body).toJSON()
-    const { id, ...rest } = blog
+    const { id, user, ...rest } = blog
     assert.deepStrictEqual(rest, newBlog)
 
     const blogsInDb = await helper.blogsInDb()
     assert(blogsInDb.length, helper.initialBlogs.length + 1)
+
+  })
+
+  test('creation fails with 401 if token not provided', async () => {
+    const newBlog = {
+      title: 'Robot wars',
+      author: 'Isaac Asimov',
+      url: 'http://blog.scifi.com/uncle-isaac/2016/05/01/irobot.html',
+      likes: 24
+    }
+
+    const postResponse = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsInDb = await helper.blogsInDb()
+    assert(blogsInDb.length, helper.initialBlogs.length)
 
   })
 
@@ -70,11 +125,12 @@ describe('blog API with existing initial data', () => {
     const postResponse = await api
       .post('/api/blogs')
       .send(newBlog)
+      .set({ Authorization: `Bearer ${myToken}` })
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const blog = new Blog(postResponse.body).toJSON()
-    const { id, likes, ...rest } = blog
+    const { id, likes, user, ...rest } = blog
     assert.deepStrictEqual(rest, newBlog)
     assert.strictEqual(likes, 0)
 
@@ -90,6 +146,7 @@ describe('blog API with existing initial data', () => {
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set({ Authorization: `Bearer ${myToken}` })
       .expect(400)
 
     const blogsAtEnd = await helper.blogsInDb()
@@ -107,6 +164,7 @@ describe('blog API with existing initial data', () => {
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set({ Authorization: `Bearer ${myToken}` })
       .expect(400)
 
     const blogsAtEnd = await helper.blogsInDb()
@@ -121,6 +179,7 @@ describe('blog API with existing initial data', () => {
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
+        .set({ Authorization: `Bearer ${myToken}` })
         .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
@@ -136,7 +195,8 @@ describe('blog API with existing initial data', () => {
 
       await api
         .delete(`/api/blogs/${invalidId}`)
-        .expect(204)
+        .set({ Authorization: `Bearer ${myToken}` })
+        .expect(401)
 
       const blogsAtEnd = await helper.blogsInDb()
 
