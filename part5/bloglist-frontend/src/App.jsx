@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
-import LoginForm from './components/Login'
 import Notification from './components/Notification'
 
 import blogService from './services/blogs'
@@ -17,6 +16,15 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
     )
+  }, [])
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
   }, [])
 
   const loginForm = () => (
@@ -43,6 +51,16 @@ const App = () => {
       <button type="submit">login</button>
     </form>
   )
+  
+  const handleLogout = async (event) => {
+    event.preventDefault()
+    window.localStorage.removeItem('loggedBlogAppUser')
+    setUser(null)
+    setErrorMessage('User logged out')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -52,12 +70,16 @@ const App = () => {
         username, password,
       })
       window.localStorage.setItem(
-        'loggedNoteappUser', JSON.stringify(user)
+        'loggedBlogAppUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
+      setErrorMessage('Login successful')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     } catch (exception) {
       setErrorMessage('Wrong credentials')
       setTimeout(() => {
@@ -73,7 +95,7 @@ const App = () => {
         loginForm() :
         <div>
           <h2>blogs</h2>
-          <p>{user.name} logged in</p>
+          <p>{user.name} logged in <button onClick={handleLogout}> logout </button></p>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
           )}
