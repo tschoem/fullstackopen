@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
-import newBlogForm from './components/NewBlog'
+import NewBlogForm from './components/NewBlog'
+import './index.css'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
-import NewBlogForm from './components/NewBlog'
+
+const NOTIFICATION_TIMEOUT = 5000
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -61,7 +63,7 @@ const App = () => {
     setWarning({type:'info',message:'User logged out'})
       setTimeout(() => {
         setWarning({type:null,message:null})
-      }, 5000)
+      }, NOTIFICATION_TIMEOUT)
   }
 
   const handleLogin = async (event) => {
@@ -81,12 +83,12 @@ const App = () => {
       setWarning({type:'info',message:'User logged in'})
       setTimeout(() => {
         setWarning({type:null,message:null})
-      }, 5000)
+      }, NOTIFICATION_TIMEOUT)
     } catch (exception) {
       setWarning({type:'error',message:'Wrong credentials'})
       setTimeout(() => {
         setWarning({type:null,message:null})
-      }, 5000)
+      }, NOTIFICATION_TIMEOUT)
     }
   }
 
@@ -101,7 +103,7 @@ const App = () => {
       setWarning({type:'error',message:'Missing details for new blog'})
       setTimeout(() => {
         setWarning({type:null,message:null})
-      }, 5000)
+      }, NOTIFICATION_TIMEOUT)
       return
     }
 
@@ -115,12 +117,16 @@ const App = () => {
     if (returnedBlog) {
       setBlogs(blogs.concat(returnedBlog))
       event.target.reset()
+      setWarning({type:'info',message:`a new blog ${blogObject.title} by ${blogObject.author} added`})
+      setTimeout(() => {
+        setWarning({type:null,message:null})
+      }, NOTIFICATION_TIMEOUT)
     }
     else {
       setWarning({type:'error',message:'Could not add new blog'})
       setTimeout(() => {
         setWarning({type:null,message:null})
-      }, 5000)
+      }, NOTIFICATION_TIMEOUT)
     }
 
   }
