@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import NewBlogForm from './components/NewBlog'
+import Togglable from './components/Togglable'
 import './index.css'
 
 import blogService from './services/blogs'
@@ -14,7 +15,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [warning, setWarning] = useState({type: null, message: null})
+  const [warning, setWarning] = useState({ type: null, message: null })
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -30,6 +31,8 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const blogFormRef = useRef()
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -55,15 +58,15 @@ const App = () => {
       <button type="submit">login</button>
     </form>
   )
-  
+
   const handleLogout = async (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogAppUser')
     setUser(null)
-    setWarning({type:'info',message:'User logged out'})
-      setTimeout(() => {
-        setWarning({type:null,message:null})
-      }, NOTIFICATION_TIMEOUT)
+    setWarning({ type: 'info', message: 'User logged out' })
+    setTimeout(() => {
+      setWarning({ type: null, message: null })
+    }, NOTIFICATION_TIMEOUT)
   }
 
   const handleLogin = async (event) => {
@@ -80,14 +83,14 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setWarning({type:'info',message:'User logged in'})
+      setWarning({ type: 'info', message: 'User logged in' })
       setTimeout(() => {
-        setWarning({type:null,message:null})
+        setWarning({ type: null, message: null })
       }, NOTIFICATION_TIMEOUT)
     } catch (exception) {
-      setWarning({type:'error',message:'Wrong credentials'})
+      setWarning({ type: 'error', message: 'Wrong credentials' })
       setTimeout(() => {
-        setWarning({type:null,message:null})
+        setWarning({ type: null, message: null })
       }, NOTIFICATION_TIMEOUT)
     }
   }
@@ -97,12 +100,12 @@ const App = () => {
 
     console.log(event.target.author.value)
     console.log(event.target.url.value)
-    console.log(event.target.title.value)   
+    console.log(event.target.title.value)
 
     if (!event.target.author.value || !event.target.url.value || !event.target.title.value) {
-      setWarning({type:'error',message:'Missing details for new blog'})
+      setWarning({ type: 'error', message: 'Missing details for new blog' })
       setTimeout(() => {
-        setWarning({type:null,message:null})
+        setWarning({ type: null, message: null })
       }, NOTIFICATION_TIMEOUT)
       return
     }
@@ -117,15 +120,16 @@ const App = () => {
     if (returnedBlog) {
       setBlogs(blogs.concat(returnedBlog))
       event.target.reset()
-      setWarning({type:'info',message:`a new blog ${blogObject.title} by ${blogObject.author} added`})
+      blogFormRef.current.toggleVisibility()
+      setWarning({ type: 'info', message: `a new blog ${blogObject.title} by ${blogObject.author} added` })
       setTimeout(() => {
-        setWarning({type:null,message:null})
+        setWarning({ type: null, message: null })
       }, NOTIFICATION_TIMEOUT)
     }
     else {
-      setWarning({type:'error',message:'Could not add new blog'})
+      setWarning({ type: 'error', message: 'Could not add new blog' })
       setTimeout(() => {
-        setWarning({type:null,message:null})
+        setWarning({ type: null, message: null })
       }, NOTIFICATION_TIMEOUT)
     }
 
@@ -139,7 +143,9 @@ const App = () => {
         <div>
           <h2>blogs</h2>
           <p>{user.name} logged in <button onClick={handleLogout}> logout </button></p>
-          <NewBlogForm handleSubmit={handleNewBlog} />
+          <Togglable buttonLabel="new note" ref={blogFormRef}>
+            <NewBlogForm handleSubmit={handleNewBlog} />
+          </Togglable>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
           )}

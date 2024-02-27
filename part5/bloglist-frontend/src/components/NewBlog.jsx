@@ -1,6 +1,6 @@
 const NewBlogForm = ({ handleSubmit }) => (
   <>
-    <h2>new Blog</h2>
+    <h2>create new</h2>
     <form onSubmit={handleSubmit} >
       <div>
         title
