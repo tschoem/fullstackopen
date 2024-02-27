@@ -95,31 +95,19 @@ const App = () => {
     }
   }
 
-  const handleNewBlog = async (event) => {
-    event.preventDefault()
+  const createBlog = async (blogObject) => {
 
-    console.log(event.target.author.value)
-    console.log(event.target.url.value)
-    console.log(event.target.title.value)
-
-    if (!event.target.author.value || !event.target.url.value || !event.target.title.value) {
+    if (!blogObject.author || !blogObject.url || !blogObject.title) {
       setWarning({ type: 'error', message: 'Missing details for new blog' })
       setTimeout(() => {
         setWarning({ type: null, message: null })
       }, NOTIFICATION_TIMEOUT)
-      return
-    }
-
-    const blogObject = {
-      author: event.target.author.value,
-      url: event.target.url.value,
-      title: event.target.title.value
+      return null
     }
 
     const returnedBlog = await blogService.create(blogObject)
     if (returnedBlog) {
       setBlogs(blogs.concat(returnedBlog))
-      event.target.reset()
       blogFormRef.current.toggleVisibility()
       setWarning({ type: 'info', message: `a new blog ${blogObject.title} by ${blogObject.author} added` })
       setTimeout(() => {
@@ -133,6 +121,8 @@ const App = () => {
       }, NOTIFICATION_TIMEOUT)
     }
 
+    return returnedBlog
+
   }
 
   return (
@@ -144,7 +134,7 @@ const App = () => {
           <h2>blogs</h2>
           <p>{user.name} logged in <button onClick={handleLogout}> logout </button></p>
           <Togglable buttonLabel="new note" ref={blogFormRef}>
-            <NewBlogForm handleSubmit={handleNewBlog} />
+            <NewBlogForm createBlog={createBlog} />
           </Togglable>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
