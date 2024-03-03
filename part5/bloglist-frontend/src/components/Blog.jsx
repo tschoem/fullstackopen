@@ -24,14 +24,13 @@ const Blog = ({ blog }) => {
   const showDetails = () => (
     <>
       {blog.title} {blog.author} <button onClick={toggleView}>hide</button><br />
-      {blog.url}<br />
+      <a href={blog.url}>{blog.url}</a><br />
       likes: {blog.likes} <button>like</button><br />
       {blog.user.name}
     </>
   )
 
   const renderBlog = () => {
-    console.log(blog)
     if (detailedView) {
       return showDetails()
     } else {

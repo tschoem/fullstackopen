@@ -7,7 +7,6 @@ const NewBlogForm = ({ createBlog }) => {
 
   const addBlog = async (event) => {
     event.preventDefault()
-    debugger
     const returnedBlog = await createBlog({
       author: newAuthor,
       url: newUrl,
