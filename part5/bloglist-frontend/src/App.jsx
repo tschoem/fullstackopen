@@ -95,6 +95,21 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (blogId) => {
+    let blogToDelete = blogs.find(b => b.id === blogId)
+
+    if (window.confirm(`Remove Blog ${blogToDelete.title} by ${blogToDelete.author} ?`)) {
+      const response = await blogService.remove(blogId)
+      if (response.status === 204) {
+        setBlogs(blogs.filter(blog => blog.id !== blogId))
+        setWarning({ type: 'info', message: `Blog deleted: ${blogToDelete.title} by ${blogToDelete.author}` })
+        setTimeout(() => {
+          setWarning({ type: null, message: null })
+        }, NOTIFICATION_TIMEOUT)
+      }
+    }
+  }
+
   const incrementLikes = async (blogId) => {
     let blogToUpdate = blogs.find(b => b.id === blogId)
 
@@ -104,7 +119,7 @@ const App = () => {
 
     if (returnedBlog) {
       setBlogs(blogs.map(blog => blog.id !== blogId ? blog : returnedBlog))
-      setWarning({ type: 'info', message: `Incremented likes for ${returnedBlog.title}`})
+      setWarning({ type: 'info', message: `Incremented likes for ${returnedBlog.title}` })
       setTimeout(() => {
         setWarning({ type: null, message: null })
       }, NOTIFICATION_TIMEOUT)
@@ -154,7 +169,7 @@ const App = () => {
             <NewBlogForm createBlog={createBlog} />
           </Togglable>
           {blogs.sort((blog1, blog2) => blog2.likes - blog1.likes).map(blog =>
-            <Blog key={blog.id} blog={blog} incrementLikes={() => incrementLikes(blog.id)} />
+            <Blog key={blog.id} user={user} blog={blog} incrementLikes={() => incrementLikes(blog.id)} deleteBlog={() => deleteBlog(blog.id)} />
           )}
         </div>
       }
