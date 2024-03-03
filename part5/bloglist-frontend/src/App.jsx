@@ -95,6 +95,22 @@ const App = () => {
     }
   }
 
+  const incrementLikes = async (blogId) => {
+    let blogToUpdate = blogs.find(b => b.id === blogId)
+
+    blogToUpdate.likes++
+
+    const returnedBlog = await blogService.update(blogToUpdate)
+
+    if (returnedBlog) {
+      setBlogs(blogs.map(blog => blog.id !== blogId ? blog : returnedBlog))
+      setWarning({ type: 'info', message: `Incremented likes for ${returnedBlog.title}`})
+      setTimeout(() => {
+        setWarning({ type: null, message: null })
+      }, NOTIFICATION_TIMEOUT)
+    }
+  }
+
   const createBlog = async (blogObject) => {
 
     if (!blogObject.author || !blogObject.url || !blogObject.title) {
@@ -138,7 +154,7 @@ const App = () => {
             <NewBlogForm createBlog={createBlog} />
           </Togglable>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} incrementLikes={() => incrementLikes(blog.id)} />
           )}
         </div>
       }
