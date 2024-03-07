@@ -5,7 +5,6 @@ import LoginForm from './components/Login'
 import Togglable from './components/Togglable'
 import NoteForm from './components/NoteForm'
 import Footer from './components/Footer'
-import Togglable from './components/Togglable'
 import noteService from './services/notes'
 import loginService from './services/login'
 
