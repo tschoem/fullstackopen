@@ -76,3 +76,22 @@ test('renders url and likes after show button is clicked', async () => {
     testBlog.likes
   )
 })
+
+test('incrementLikes handler called twice when like button is clicked twice', async () => {
+  
+  const incrementLikes = vi.fn()
+  const deleteBlog = vi.fn()
+  const user = userEvent.setup()
+
+  const { container } = render(<Blog blog={testBlog} user={testUser} incrementLikes={incrementLikes} deleteBlog={deleteBlog} />)
+
+  const showButton = screen.getByText('show')
+  await user.click(showButton)
+
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+
+  expect(incrementLikes.mock.calls).toHaveLength(2)
+
+})
