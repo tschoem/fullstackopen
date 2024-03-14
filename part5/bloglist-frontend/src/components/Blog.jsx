@@ -23,7 +23,7 @@ const Blog = ({ blog, user, incrementLikes, deleteBlog }) => {
   )
 
   const showDetails = () => (
-    <>
+    <div className='blog-details'>
       {blog.title} {blog.author} <button onClick={toggleView}>hide</button><br />
       <a href={blog.url}>{blog.url}</a><br />
       likes: {blog.likes} <button onClick={incrementLikes}>like</button><br />
@@ -31,7 +31,7 @@ const Blog = ({ blog, user, incrementLikes, deleteBlog }) => {
       {blog.user.id === user.id &&
         <button style={{ backgroundColor: 'blue' }} onClick={deleteBlog}>remove</button>
       }
-    </>
+    </div>
   )
 
   const renderBlog = () => {
