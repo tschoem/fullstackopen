@@ -17,9 +17,9 @@ const Blog = ({ blog, user, incrementLikes, deleteBlog }) => {
   }
 
   const showSummary = () => (
-    <>
+    <div className='blog-summary'>
       {blog.title} {blog.author} <button onClick={toggleView}>show</button>
-    </>
+    </div>
   )
 
   const showDetails = () => (
