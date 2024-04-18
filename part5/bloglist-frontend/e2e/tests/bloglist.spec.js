@@ -49,6 +49,21 @@ test.describe('Blog app', () => {
       await expect(page.locator('.blog-summary').getByText("React patterns")).toBeVisible()
       await expect(page.locator('.blog-summary').getByText("Michael Chan")).toBeVisible()
     })
+
+    test('a new blog can be expanded and edited', async ({ page }) => {
+      await createBlog(page, 'React patterns', 'Michael Chan', 'https://reactpatterns.com/')
+      await createBlog(page, 'Canonical string reduction', 'Edsger W. Dijkstra', 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html')
+
+      await expect(page.locator('.blog-summary').filter({ hasText: 'React patterns Michael Chan' }).getByRole('button', { name: 'show' })).toBeVisible()
+      await page.locator('.blog-summary').filter({ hasText: 'React patterns Michael Chan' }).getByRole('button', { name: 'show' }).click()
+      await expect(page.locator('.blog-details').filter({ hasText: 'React patterns Michael Chan' }).getByRole('link', { name: 'https://reactpatterns.com/' })).toBeVisible()
+
+      await expect(page.locator('.blog-details').filter({ hasText: 'React patterns Michael Chan' }).getByRole('button', { name: 'like' })).toBeVisible()
+      await page.locator('.blog-details').filter({ hasText: 'React patterns Michael Chan' }).getByRole('button', { name: 'like' }).click()
+      await page.locator('.blog-details').filter({ hasText: 'React patterns Michael Chan' }).getByRole('button', { name: 'like' }).click()
+      await expect(page.locator('.blog-details').filter({ hasText: 'React patterns Michael Chan' }).getByText('likes: 2')).toBeVisible()
+
+    })
   })
 
 })
