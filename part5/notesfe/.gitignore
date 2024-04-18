@@ -25,3 +25,7 @@ coverage
 *.sw?
 db.json
 notes-frontend.code-workspace
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
