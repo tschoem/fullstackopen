@@ -11,6 +11,13 @@ test.describe('Blog app', () => {
         password: 'password'
       }
     })
+    await request.post('/api/users', {
+      data: {
+        name: 'Arnold Second',
+        username: 'arnold',
+        password: 'second'
+      }
+    })
 
     await page.goto('/')
   })
@@ -65,7 +72,7 @@ test.describe('Blog app', () => {
 
     })
 
-    test.only('a new blog can be deleted', async ({ page }) => {
+    test('a new blog can be deleted', async ({ page }) => {
       await createBlog(page, 'React patterns', 'Michael Chan', 'https://reactpatterns.com/')
       await createBlog(page, 'Canonical string reduction', 'Edsger W. Dijkstra', 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html')
 
@@ -77,6 +84,21 @@ test.describe('Blog app', () => {
       await expect(page.locator('.info').getByText('Blog deleted: React patterns')).toBeVisible()
       await expect(page.getByText('React patterns Michael Chan')).not.toBeVisible()
     })
+
+    test('only the user who creates the blog can see the remove button', async ({ page }) => {
+      await createBlog(page, 'React patterns', 'Michael Chan', 'https://reactpatterns.com/')
+      await createBlog(page, 'Canonical string reduction', 'Edsger W. Dijkstra', 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html')
+
+      await page.locator('.blog-summary').filter({ hasText: 'React patterns Michael Chan' }).getByRole('button', { name: 'show' }).click()
+      await expect(page.locator('.blog-details').filter({ hasText: 'React patterns Michael Chan' }).getByRole('button', { name: 'remove' })).toBeVisible()
+
+      await page.getByRole('button', { name: 'logout' }).click()
+      await loginWith(page, "arnold", "second")
+
+      await page.locator('.blog-summary').filter({ hasText: 'React patterns Michael Chan' }).getByRole('button', { name: 'show' }).click()
+      await expect(page.locator('.blog-details').filter({ hasText: 'React patterns Michael Chan' }).getByRole('button', { name: 'remove' })).not.toBeVisible()
+    })
+
   })
 
 })
