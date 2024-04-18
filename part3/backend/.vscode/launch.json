@@ -15,22 +15,6 @@
       "name": "Run npm start:test",
       "request": "launch",
       "type": "node-terminal"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Launch Program",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "program": "${workspaceFolder}/e2e/tests/note_app.spec.js",
-      "env": {
-        "NODE_ENV": "test",
-        "MONGODB_URI": "mongodb+srv://tom:rlTA6wcoQSNfOzuN@cluster-tfs0.vkrt3ug.mongodb.net/noteApp?retryWrites=true&w=majority",
-        "TEST_MONGODB_URI": "mongodb+srv://tom:rlTA6wcoQSNfOzuN@cluster-tfs0.vkrt3ug.mongodb.net/testNoteApp?retryWrites=true&w=majority",
-        "PORT": "3001",
-        "SECRET": "cn478uyio3hrhjcfinu3hwic"
-      },
     }
   ]
 }
