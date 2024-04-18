@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{$dotenv TOKEN}}
+
+{
+  "title": "Another blogs entry",
+  "author": "Missing person",
+  "url": "https://www.anotherone.org/post",
+  "likes": 5
+}
