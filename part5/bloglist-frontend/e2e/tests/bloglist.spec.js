@@ -23,12 +23,12 @@ test.describe('Blog app', () => {
 
   test.describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      await loginWith(page, "tom", "password")
+      await loginWith(page, 'tom', 'password')
       await expect(page.getByText('Thomas Schoemaecker logged in')).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
-      await loginWith(page, "tom", "wrong password")
+      await loginWith(page, 'tom', 'wrong password')
       const errorDiv = await page.locator('.error')
       await expect(errorDiv).toContainText('Wrong credentials')
       await expect(errorDiv).toHaveCSS('border-style', 'solid')
@@ -36,4 +36,19 @@ test.describe('Blog app', () => {
       await expect(page.getByText('Matti Luukkainen logged in')).not.toBeVisible()
     })
   })
+
+  test.describe('When logged in', () => {
+    test.beforeEach(async ({ page }) => {
+      await loginWith(page, "tom", "password")
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+      await createBlog(page, 'React patterns', 'Michael Chan', 'https://reactpatterns.com/')
+      await createBlog(page, 'Canonical string reduction', 'Edsger W. Dijkstra', 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html')
+
+      await expect(page.locator('.blog-summary').getByText("React patterns")).toBeVisible()
+      await expect(page.locator('.blog-summary').getByText("Michael Chan")).toBeVisible()
+    })
+  })
+
 })

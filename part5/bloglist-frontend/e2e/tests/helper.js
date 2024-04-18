@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test';
+
 const loginWith = async (page, username, password) => {
   await page.getByRole('button', { name: 'login' }).click()
   await page.getByTestId('username').fill(username)
@@ -5,11 +7,14 @@ const loginWith = async (page, username, password) => {
   await page.getByRole('button', { name: 'login' }).click()
 }
 
-const createBlog = async (page, content) => {
-  await page.getByRole('button', { name: 'new note' }).click()
-  await page.getByRole('textbox').fill(content)
-  await page.getByRole('button', { name: 'save' }).click()
-  await page.getByText(content).waitFor()
+const createBlog = async (page, title, author, url) => {
+  await page.getByRole('button', { name: 'new blog' }).click()
+  await expect(page.locator('//h2').getByText('create new')).toBeVisible()
+  await page.getByTestId('title-input').fill(title)
+  await page.getByTestId('author-input').fill(author)
+  await page.getByTestId('url-input').fill(url)
+  await page.getByRole('button', { name: 'create' }).click()
+  await page.locator('.blog-summary').getByText(title).waitFor()
 }
 
 export { loginWith, createBlog }

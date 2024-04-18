@@ -167,7 +167,7 @@ const App = () => {
         <div>
           <h2>blogs</h2>
           <p>{user.name} logged in <button onClick={handleLogout}> logout </button></p>
-          <Togglable buttonLabel="new note" ref={blogFormRef}>
+          <Togglable buttonLabel="new blog" ref={blogFormRef}>
             <NewBlogForm createBlog={createBlog} />
           </Togglable>
           {blogs.sort((blog1, blog2) => blog2.likes - blog1.likes).map(blog =>

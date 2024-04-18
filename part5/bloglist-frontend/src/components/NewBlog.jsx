@@ -13,7 +13,7 @@ const NewBlogForm = ({ createBlog }) => {
       url: newUrl,
       title: newTitle
     })
-    
+
     if (returnedBlog) {
       setNewTitle('')
       setNewAuthor('')
@@ -32,6 +32,7 @@ const NewBlogForm = ({ createBlog }) => {
             name="title"
             aria-label="title-input"
             value={newTitle}
+            data-testid="title-input"
             onChange={event => setNewTitle(event.target.value)}
           />
         </div>
@@ -41,6 +42,7 @@ const NewBlogForm = ({ createBlog }) => {
             type="text"
             name="author"
             aria-label="author-input"
+            data-testid="author-input"
             value={newAuthor}
             onChange={event => setNewAuthor(event.target.value)}
           />
@@ -51,6 +53,7 @@ const NewBlogForm = ({ createBlog }) => {
             type="text"
             name="url"
             aria-label="url-input"
+            data-testid="url-input"
             value={newUrl}
             onChange={event => setNewUrl(event.target.value)}
           />
