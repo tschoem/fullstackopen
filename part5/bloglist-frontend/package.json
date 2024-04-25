@@ -9,11 +9,17 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest run",
-    "test-e2e": "playwright test",
-    "test-e2e:report": "playwright show-report"
+    "test-e2e": "cross-env BASE_URL=https://bloglist.fly.dev/ playwright test",
+    "test-e2e-local": "cross-env BASE_URL=http://localhost:5173/ playwright test",
+    "test-e2e:report": "playwright show-report",
+    "postinstall": "npm update browserstack-node-sdk",
+    "test-e2e-browserstack-local": "cross-env BASE_URL=http://localhost:5173/ npx browserstack-node-sdk playwright test --browserstack.config='browserstack-local.yml'",
+    "test-e2e-browserstack": "cross-env BASE_URL=https://bloglist.fly.dev/ npx browserstack-node-sdk playwright test",
+    "test-e2e:report-browserstack": "browserstack-node-sdk playwright show-report"
   },
   "dependencies": {
     "axios": "^1.4.0",
+    "cross-env": "^7.0.3",
     "playwright": "^1.43.1",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
@@ -28,6 +34,7 @@
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
+    "browserstack-node-sdk": "^1.32.8",
     "eslint": "^8.45.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",

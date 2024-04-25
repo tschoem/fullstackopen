@@ -15,6 +15,7 @@ blogsRouter.post('/', async (request, response) => {
     return response.status(401).json({ error: 'invalid or missing token' })
   }
 
+  console.log(`request new blog for ${user}`)
   const blogEntry = new Blog({
     author: body.author,
     url: body.url,
@@ -41,7 +42,7 @@ blogsRouter.delete('/:id', async (request, response) => {
     return response.status(401).json({ error: 'wrong id provided' })
   }
 
-  if ( blogToDelete.user.toString() === user.id.toString() ) {
+  if (blogToDelete.user.toString() === user.id.toString()) {
     await Blog.findByIdAndDelete(request.params.id)
     return response.status(204).end()
   } else {

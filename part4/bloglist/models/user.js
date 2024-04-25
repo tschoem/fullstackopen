@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
       ref: 'Blog'
     }
   ]
-})
+}, { versionKey: false })
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
